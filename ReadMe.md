@@ -14,6 +14,8 @@ The above were not added as it was not clear if it is part of the assessment.
 
 # Testing the application
 `mvn test`
+# Junit Report dir
+`interviewassessment/target/surefire-reports/TEST-de.idealo.TestPrice.xml`
 
 ## Others
 

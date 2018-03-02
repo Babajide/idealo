@@ -1,5 +1,5 @@
-#Project Notes.
-###Author: Prince Agbebiyi
+# Project Notes.
+### Author: Prince Agbebiyi
 
 Thank you for the opportunity. I have coded the backend/service layer in accordance to the unit test, -TDD
 
@@ -12,7 +12,7 @@ What could be improved:
 
 The above were not added as it was not clear if it is part of the assessment.
 
-#Testing the application
+# Testing the application
 `mvn test`
 
 ## Others

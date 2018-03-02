@@ -12,6 +12,9 @@ What could be improved:
 
 The above were not added as it was not clear if it is part of the assessment.
 
+#Testing the application
+`mvn test`
+
 ## Others
 
 lombox plugin has been used to avoid the use of boilerplate code.

@@ -4,6 +4,7 @@
 Thank you for the opportunity. I have coded the backend/service layer in accordance to the unit test, -TDD
 
 What could be improved:
+* Implement Strategy patten for normal and Special Price
 * Exception handling
 * More domain Object
 * Ability to remove and update cart

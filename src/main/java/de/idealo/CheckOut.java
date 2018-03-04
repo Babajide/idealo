@@ -1,5 +1,8 @@
 package de.idealo;
 
+import de.idealo.strategy.NormalPricingImpl;
+import de.idealo.strategy.SpecialPricingImpl;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,45 +31,47 @@ public class CheckOut {
 
     public int total() {
         //No valid item scanned.
-        if(order .isEmpty()) {
+        if (order.isEmpty()) {
             return 0;
         }
         //examine order, apply special pricing if available
         int amt = 0;
-        for(String key : order.keySet()){
-            for(PricingRule pricingRule : rules){
-              if(isDiscounted(key, order.get(key))){
-                  int multiple = order.get(key) / pricingRule.getSpecialPrice().getQuantity();
-                  int modulusRemainder = order.get(key) % pricingRule.getSpecialPrice().getQuantity();
-                  amt+= (multiple * pricingRule.getSpecialPrice().getPrice() + normalPricing(modulusRemainder, pricingRule));
-                  break;
-              }else {
-                  if(key.equals(pricingRule.getSku())){
-                      amt+= normalPricing(order.get(key), pricingRule);
-                      break;
+        for (String key : order.keySet()) {
+            for (PricingRule pricingRule : rules) {
+                if (isDiscounted(key, order.get(key))) {
+                    int multiple = order.get(key) / pricingRule.getSpecialPrice().getQuantity();
+                    int modulusRemainder = order.get(key) % pricingRule.getSpecialPrice().getQuantity();
+                    amt += specialPricing(multiple, pricingRule);
+                    if (modulusRemainder > 0) {
+                        amt += normalPricing(modulusRemainder, pricingRule);
+                    }
+                    break;
+                } else {
+                    if (key.equals(pricingRule.getSku())) {
+                        amt += normalPricing(order.get(key), pricingRule);
+                        break;
 
-                  }
-              }
-          }
+                    }
+                }
+            }
 
         }
         return amt;
     }
 
-   private final int normalPricing(int quantity, PricingRule rule ) {
-        return  quantity * rule.getUnitPrice();
-   }
-   private boolean isDiscounted(final String sku, final int quantity){
-        /*for (PricingRule rule : rules){
-            SpecialPrice specialPrice = rule.getSpecialPrice();
-            if(specialPrice != null && (quantity >= specialPrice.getQuantity()) && sku.equals(specialPrice.getSku())){
-                return true;
-            }
-        }*/
+    private final int normalPricing(int quantity, PricingRule rule) {
+        return new NormalPricingImpl().calculate(quantity, rule).intValue();
+    }
 
-        //if you do not have java8, comment out the streams and uncomment these lines above
-       Predicate<PricingRule> pricingRulePredicate = p-> (p.getSpecialPrice()!=null && quantity >= p.getSpecialPrice().getQuantity()) && sku.equals(p.getSku());
+    private final int specialPricing(int quantity, PricingRule rule) {
+        return new SpecialPricingImpl().calculate(quantity, rule).intValue();
+    }
 
-       return rules.stream().anyMatch(pricingRulePredicate::test);
-   }
+    private boolean isDiscounted(final String sku, final int quantity) {
+        Predicate<PricingRule> pricingRulePredicate = p ->
+                (p.getSpecialPrice() != null
+                        && quantity >= p.getSpecialPrice().getQuantity())
+                        && sku.equals(p.getSku());
+        return rules.stream().anyMatch(pricingRulePredicate::test);
+    }
 }

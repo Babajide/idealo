@@ -2,8 +2,6 @@ package de.idealo;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.math.BigDecimal;
 @Builder
 @Data
 public class SpecialPrice {
